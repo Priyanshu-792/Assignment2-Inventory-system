@@ -22,7 +22,3 @@ List of products:
 5. If the user adds 50 cabbages to the inventory, print the final quantity of cabbage in the inventory.
 6. If a user purchases 1kg lettuce, 2 kg zucchini, 1 kg broccoli, what is the rounded figure that the user needs to pay?
 
-### Program:
-
-```csharp
-// Your C# code goes here
