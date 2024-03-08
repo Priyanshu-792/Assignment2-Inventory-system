@@ -1,82 +1,124 @@
 ﻿using System;
-class Program
-{
-    static void Main()
-    {
-        List<Product> products = new List<Product>
-        {
-            new Product("lettuce", 10.5, 50, "Leafy green"),
-            new Product("cabbage", 20, 100, "Cruciferous"),
-            new Product("pumpkin", 30, 30, "Marrow"),
-            new Product("cauliflower", 10, 25, "Cruciferous"),
-            new Product("zucchini", 20.5, 50, "Marrow"),
-            new Product("yam", 30, 50, "Root"),
-            new Product("spinach", 10, 100, "Leafy green"),
-            new Product("broccoli", 20.2, 75, "Cruciferous"),
-            new Product("garlic", 30, 20, "Leafy green"),
-            new Product("silverbeet", 10, 50, "Marrow")
-        };
+using System.Collections.Generic;
+using System.Linq;
 
-        
-        Console.WriteLine($"Total number of products: {products.Count}");
-
-
-        Product newProduct = new Product("Potato", 10, 50, "Root");
-        products.Add(newProduct);
-        Console.WriteLine("\nAdded a new product:");
-        PrintProducts(products);
-
-        Console.WriteLine("\nLeafy green products:");
-        var leafyGreenProducts = products.Where(p => p.Type == "Leafy green");
-        PrintProducts(leafyGreenProducts);
-
-
-        products.RemoveAll(p => p.Name == "garlic");
-        Console.WriteLine("\nRemoved Garlic from the list:");
-        PrintProducts(products);
-
-        // Add 50 cabbages to the inventory
-        Product cabbage = products.FirstOrDefault(p => p.Name == "cabbage");
-        if (cabbage != null)
-        {
-            cabbage.Quantity += 50;
-        }
-        Console.WriteLine("\nAdded 50 cabbages to the inventory:");
-        PrintProducts(products);
-
-        // Calculate the total price for the purchase
-        double lettucePrice = products.FirstOrDefault(p => p.Name == "lettuce")?.Price ?? 0;
-        double zucchiniPrice = products.FirstOrDefault(p => p.Name == "zucchini")?.Price ?? 0;
-        double broccoliPrice = products.FirstOrDefault(p => p.Name == "broccoli")?.Price ?? 0;
-
-        double totalPrice = 1 * lettucePrice + 2 * zucchiniPrice + 1 * broccoliPrice;
-        Console.WriteLine($"\nThe total price for the purchase is: {totalPrice} RS");
-        Console.ReadLine();
-    }
-
-    static void PrintProducts(IEnumerable<Product> products)
-    {
-        foreach (var product in products)
-        {
-            Console.WriteLine($"{product.Name}, {product.Price} RS, {product.Quantity}, {product.Type}");
-        }
-        Console.WriteLine($"Total number of products: {products.Count()}");
-
-    }
-}
-
-class Product
+public class Product
 {
     public string Name { get; set; }
-    public double Price { get; set; }
+    public decimal Price { get; set; }
     public int Quantity { get; set; }
     public string Type { get; set; }
 
-    public Product(string name, double price, int qty, string type)
+    public override string ToString()
     {
-        Name = name;
-        Price = price;
-        Quantity = qty;
-        Type = type;
+        return $"{Name}, {Price} RS, {Quantity}, {Type}";
+    }
+}
+
+public class InventoryManager
+{
+    private List<Product> products = new List<Product>();
+
+    public void AddProduct(string name, decimal price, int quantity, string type)
+    {
+        products.Add(new Product { Name = name, Price = price, Quantity = quantity, Type = type });
+    }
+
+    public void PrintTotalProducts()
+    {
+        Console.WriteLine($"\nTotal number of products: {products.Count}");
+    }
+
+    public void PrintAllProducts()
+    {
+        Console.WriteLine("List of all products:");
+        foreach (var product in products)
+        {
+            Console.WriteLine(product);
+        }
+    }
+
+
+
+    public void PrintProductsByType(string type)
+    {
+        var filteredProducts = products.Where(p => p.Type.Equals(type, StringComparison.OrdinalIgnoreCase));
+        Console.WriteLine($"\nProducts of type {type}:");
+        foreach (var product in filteredProducts)
+        {
+            Console.WriteLine(product);
+        }
+    }
+
+    public void RemoveProduct(string name)
+    {
+        products.RemoveAll(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+      
+    }
+
+    public int UpdateProductQuantity(string name, int additionalQuantity)
+    {
+        var product = products.FirstOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        if (product != null)
+        {
+            product.Quantity += additionalQuantity;
+            return product.Quantity;
+        }
+        return -1; // Product not found
+    }
+
+    public void CalculateTotalPrice(List<(string, decimal)> items)
+    {
+        decimal totalPrice = 0;
+        foreach (var (itemName, quantity) in items)
+        {
+            var product = products.FirstOrDefault(p => p.Name.Equals(itemName, StringComparison.OrdinalIgnoreCase));
+            if (product != null)
+            {
+                totalPrice += product.Price * quantity;
+            }
+        }
+        Console.WriteLine($"Total price for the purchase: {Math.Round(totalPrice)} RS");
+    }
+
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            InventoryManager manager = new InventoryManager();
+
+            // Input
+            manager.AddProduct("lettuce", 10.5m, 50, "Leafy green");
+            manager.AddProduct("cabbage", 20m, 100, "Cruciferous");
+            manager.AddProduct("pumpkin", 30m, 30, "Marrow");
+            manager.AddProduct("cauliflower", 10m, 25, "Cruciferous");
+            manager.AddProduct("zucchini", 20.5m, 50, "Marrow");
+            manager.AddProduct("yam", 30m, 50, "Root");
+            manager.AddProduct("spinach", 10m, 100, "Leafy green");
+            manager.AddProduct("broccoli", 20.2m, 75, "Cruciferous");
+            manager.AddProduct("garlic", 30m, 20, "Leafy green");
+            manager.AddProduct("silverbeet", 10m, 50, "Marrow");
+
+            // Output
+            manager.PrintTotalProducts();
+            manager.AddProduct("Potato", 10m, 50, "Root");
+            manager.PrintAllProducts();
+            manager.PrintTotalProducts();
+            manager.PrintProductsByType("Leafy green");
+            manager.RemoveProduct("garlic");
+            manager.PrintTotalProducts();
+            Console.WriteLine($"\nFinal quantity of cabbage after adding 50 more quantity: {manager.UpdateProductQuantity("cabbage", 50)}");
+
+            // Calculating total price
+            List<(string, decimal)> purchaseItems = new List<(string, decimal)>
+        {
+            ("lettuce", 1),
+            ("zucchini", 2),
+            ("broccoli", 1)
+        };
+            manager.CalculateTotalPrice(purchaseItems);
+
+        }
     }
 }
