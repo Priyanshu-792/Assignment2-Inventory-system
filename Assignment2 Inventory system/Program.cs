@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
 class Program
 {
     static void Main()
@@ -65,7 +62,6 @@ class Program
         }
         Console.WriteLine($"Total number of products: {products.Count()}");
 
-
     }
 }
 
@@ -76,11 +72,11 @@ class Product
     public int Quantity { get; set; }
     public string Type { get; set; }
 
-    public Product(string name, double price, int quantity, string type)
+    public Product(string name, double price, int qty, string type)
     {
         Name = name;
         Price = price;
-        Quantity = quantity;
+        Quantity = qty;
         Type = type;
     }
 }
