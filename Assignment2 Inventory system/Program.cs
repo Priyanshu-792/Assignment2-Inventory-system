@@ -31,7 +31,7 @@ public class InventoryManager
 
     public void PrintAllProducts()
     {
-        Console.WriteLine("List of all products:");
+        Console.WriteLine("\nList of all products:");
         foreach (var product in products)
         {
             Console.WriteLine(product);
@@ -81,7 +81,6 @@ public class InventoryManager
         Console.WriteLine($"Total price for the purchase: {Math.Round(totalPrice)} RS");
     }
 
-
     class Program
     {
         static void Main(string[] args)
@@ -107,6 +106,7 @@ public class InventoryManager
             manager.PrintTotalProducts();
             manager.PrintProductsByType("Leafy green");
             manager.RemoveProduct("garlic");
+            Console.Write("\nAfter Removing Garlic");
             manager.PrintTotalProducts();
             Console.WriteLine($"\nFinal quantity of cabbage after adding 50 more quantity: {manager.UpdateProductQuantity("cabbage", 50)}");
 
